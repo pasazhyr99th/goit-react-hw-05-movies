@@ -12,7 +12,7 @@ const Movies = () => {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const movieId = searchParams.get('movieId') ?? '';
-
+  setMovies();
   console.log(searchParams);
 
   //   useEffect(() => {
