@@ -1,0 +1,1 @@
+{"version":3,"file":"static/js/266.216f18d0.chunk.js","mappings":"0JAUA,UARa,WAKX,OAAO,2CACR,C","sources":["pages/Home.js"],"sourcesContent":["// import { useEffect } from 'react';\n\nconst Home = () => {\n  //   useEffect(() => {\n  // HTTP\n  //   }, []);\n\n  return <div>Trending today</div>;\n};\n\nexport default Home;\n"],"names":[],"sourceRoot":""}
