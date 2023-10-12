@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 
-const TrendingList = ({ movies }) => {
+const MovieList = ({ movies }) => {
   const location = useLocation();
 
   return (
@@ -17,4 +17,4 @@ const TrendingList = ({ movies }) => {
   );
 };
 
-export default TrendingList;
+export default MovieList;

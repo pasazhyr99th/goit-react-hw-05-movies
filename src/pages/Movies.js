@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState } from 'react';
+// import { useSearchParams } from 'react-router-dom';
 import { handleSearchMovie } from 'service/api';
 import MovieList from 'components/MovieList';
 import SearchForm from 'components/SearchForm';
 
 const Movies = () => {
   const [searchMovies, setSearchMovies] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
-  const movieName = searchParams.get('query') ?? '';
+  // const [searchParams, setSearchParams] = useSearchParams();
+  // const movieName = searchParams.get('query') ?? '';
 
-  useEffect(() => {
-    const searchMovieData = async () => {
+  // useEffect(() => {
+    const searchMovieData = async movieName => {
       try {
         const data = await handleSearchMovie(movieName);
         setSearchMovies(data);
@@ -19,8 +19,8 @@ const Movies = () => {
       }
     };
 
-    searchMovieData();
-  }, [movieName]);
+    // searchMovieData();
+  // }, []);
 
   // state, isLoading, errors
 
@@ -35,14 +35,14 @@ const Movies = () => {
   //   setSearchParams({ query: value });
   // };
   
-  const updQueryString = query => {
-    const nextParams = query !== '' && { query };
-    setSearchParams(nextParams);
-  };
+  // const updQueryString = query => {
+  //   const nextParams = query !== '' && { query };
+  //   setSearchParams(nextParams);
+  // };
 
   return (
     <div>
-      <SearchForm value={movieName} onChange={updQueryString} />
+      <SearchForm value={searchMovieData} />
       <MovieList movies={searchMovies} />
     </div>
   );
