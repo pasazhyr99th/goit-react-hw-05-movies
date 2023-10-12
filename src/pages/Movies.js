@@ -1,52 +1,49 @@
-import { useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { handleSearchMovie } from 'service/api';
+import MovieList from 'components/MovieList';
+import SearchForm from 'components/SearchForm';
 
 const Movies = () => {
-  const [movies, setMovies] = useState([
-    'movie-1',
-    'movie-2',
-    'movie-3',
-    'movie-4',
-    'movie-5',
-  ]);
-  const location = useLocation();
+  const [searchMovies, setSearchMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
-  const movieId = searchParams.get('movieId') ?? '';
-  setMovies();
-  console.log(searchParams);
+  const movieName = searchParams.get('query') ?? '';
 
-  //   useEffect(() => {
-  // HTTP
-  //   }, []);
+  useEffect(() => {
+    const searchMovieData = async () => {
+      try {
+        const data = await handleSearchMovie(movieName);
+        setSearchMovies(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    searchMovieData();
+  }, [movieName]);
 
   // state, isLoading, errors
 
-  const updQueryString = e => {
-    const movieIdValue = e.target.value;
-    if (movieIdValue === '') {
-      return setSearchParams({});
-    }
-    setSearchParams({ movieId: movieIdValue });
+  // const updQueryString = e => {
+  //   const movieIdValue = e.target.value;
+  //   if (movieIdValue === '') {
+  //     return setSearchParams({});
+  //   }
+  //   setSearchParams({ movieId: movieIdValue });
+  // };
+  // const handleSubmit = value => {
+  //   setSearchParams({ query: value });
+  // };
+  
+  const updQueryString = query => {
+    const nextParams = query !== '' && { query };
+    setSearchParams(nextParams);
   };
 
-  const visibleMovies = movies.filter(movie => movie.includes(movieId));
-
   return (
-    // <div>Movies 🎥</div>
     <div>
-      <input type="text" value={movieId} onChange={updQueryString} />
-      {/* <button onClick={() => setSearchParams()}>Search</button> */}
-      <ul>
-        {visibleMovies.map(movie => {
-          return (
-            <li key={movie}>
-              <Link to={`${movie}`} state={{ from: location }}>
-                {movie}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
+      <SearchForm value={movieName} onChange={updQueryString} />
+      <MovieList movies={searchMovies} />
     </div>
   );
 };

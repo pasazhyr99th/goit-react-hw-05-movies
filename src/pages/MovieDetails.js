@@ -1,14 +1,15 @@
-import { useRef, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
+// import { fetchMovieDetails } from 'service/api';
 
 const MovieDetails = () => {
   const { movieId } = useParams();
   const location = useLocation();
   const backLinkLocationRef = useRef(location.state?.from ?? '/movies');
 
-  //   useEffect(() => {
-  // HTTP
-  //   }, []);
+    useEffect(() => {
+
+    }, []);
 
   return (
     <>
