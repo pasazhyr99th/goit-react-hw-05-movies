@@ -2,9 +2,19 @@ import React, { useEffect, useRef, Suspense, useState } from 'react';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { fetchMovieDetails } from 'service/api';
 import Loader from 'components/Loader';
+import {
+  Container,
+  ContainerInfo,
+  List,
+  ListAdditionalInfo,
+  LinkAdditionalInfo,
+  Button,
+  ContainerAdditionaInfo,
+} from './MovieDetails.styled';
 
 const MovieDetails = () => {
   const [movieData, setMovieData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const { movieId } = useParams();
   const location = useLocation();
   const backLinkLocationRef = useRef(location.state?.from ?? '/');
@@ -13,11 +23,15 @@ const MovieDetails = () => {
     if (!movieId) return;
 
     const fetchMovieDetailsData = async () => {
+      setIsLoading(true);
+
       try {
         const details = await fetchMovieDetails(movieId);
         setMovieData(details);
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -26,7 +40,7 @@ const MovieDetails = () => {
 
   const {
     poster_path,
-    vote_average,
+    popularity,
     title,
     release_date,
     overview,
@@ -40,59 +54,49 @@ const MovieDetails = () => {
   return (
     <>
       <Link to={backLinkLocationRef.current}>
-        <button type="button">⬅️ Go back</button>
+        <Button type="button">⬅️ Go back</Button>
       </Link>
-      <h1>
-        {title} {release_date && `(${release_date.substring(0, 4)})`}
-      </h1>
-      <img
-        src={
-          poster_path
-            ? `https://image.tmdb.org/t/p/w500/${poster_path}`
-            : defaultImgURL
-        }
-        alt={original_title}
-        width={250}
-      />
-      <p>Rating: {vote_average}</p>
-      <p>Overview: {overview}</p>
-      <p>Genres: {genres?.map(genre => genre.name).join(', ')}</p>
-      {/* {movieData && (
-        <div>
+      {isLoading && <Loader />}
+      {movieData && (
+        <Container>
           <img
-            width="300px"
             src={
               poster_path
-                ? `https://image.tmdb.org/t/p/w500${poster_path}`
-                : `https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg`
+                ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+                : defaultImgURL
             }
             alt={original_title}
+            width={250}
           />
-          <div>
+          <ContainerInfo>
             <h1>
-              {title} ({release_date.slice(0, 4)})
+              {title} {release_date && `(${release_date.slice(0, 4)})`}
             </h1>
-            <p>User score: {popularity}</p>
+            <p>
+              <b>User score:</b> {popularity}
+            </p>
             <h2>Overview</h2>
             <p>{overview}</p>
             <h2>Genres</h2>
-            <ul>
-              {genres.map(genre => (
+            <List>
+              {genres?.map(genre => (
                 <li key={genre.id}>{genre.name}</li>
               ))}
-            </ul>
-          </div>
-        </div>
-      )} */}
-
-      <ul>
-        <li>
-          <Link to="cast">Cast</Link>
-        </li>
-        <li>
-          <Link to="reviews">Reviews</Link>
-        </li>
-      </ul>
+            </List>
+          </ContainerInfo>
+        </Container>
+      )}
+      <ContainerAdditionaInfo>
+        <h3>Additional information</h3>
+        <ListAdditionalInfo>
+          <li>
+            <LinkAdditionalInfo to="cast">Cast</LinkAdditionalInfo>
+          </li>
+          <li>
+            <LinkAdditionalInfo to="reviews">Reviews</LinkAdditionalInfo>
+          </li>
+        </ListAdditionalInfo>
+      </ContainerAdditionaInfo>
       <Suspense fallback={<Loader />}>
         <Outlet />
       </Suspense>

@@ -1,20 +1,27 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { fetchMovieCast } from 'service/api';
+import { CastList, CastItem, ContainerCast } from './Cast.styled';
+import Loader from 'components/Loader';
 
 const Cast = () => {
   const { movieId } = useParams();
   const [cast, setCast] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!movieId) return;
 
     const fetchMovieCredits = async () => {
+      setIsLoading(true);
+
       try {
         const credits = await fetchMovieCast(movieId);
         setCast(credits);
       } catch (error) {
         console.error(error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -22,27 +29,31 @@ const Cast = () => {
   }, [movieId]);
 
   return (
-    <div>
+    <ContainerCast>
+      {isLoading && <Loader />}
+
       <h2>Cast</h2>
-      <ul>
+      <CastList>
         {cast &&
-          cast.map(actor => (
-            <li key={actor.id}>
+          cast.map(({ id, profile_path, name, character }) => (
+            <CastItem key={id}>
               <img
                 src={
-                  actor.profile_path
-                    ? `https://image.tmdb.org/t/p/w500${actor.profile_path}`
+                  profile_path
+                    ? `https://image.tmdb.org/t/p/w500${profile_path}`
                     : `https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg`
                 }
-                alt={actor.name}
+                alt={name}
                 width={120}
               />
-              <p>{actor.name}</p>
-              <p>Character: {actor.character}</p>
-            </li>
+              <p>
+                <b>{name}</b>
+              </p>
+              <p>Character: {character}</p>
+            </CastItem>
           ))}
-      </ul>
-    </div>
+      </CastList>
+    </ContainerCast>
   );
 };
 
