@@ -1,16 +1,15 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 
-const SearchForm = ({ onSearch }) => {
+const SearchForm = ({ onSubmit }) => {
   const [query, setQuery] = useState('');
-  const navigate = useNavigate();
+
+  const onChange = e => {
+    setQuery(e.currentTarget.value.toLowerCase());
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
-    navigate(`/movies?query=${query}`);
-
-    onSearch(query.toLowerCase());
-    setQuery('');
+    onSubmit(query);
   };
 
   return (
@@ -20,7 +19,7 @@ const SearchForm = ({ onSearch }) => {
         name="query"
         autoFocus
         value={query}
-        onChange={e => setQuery(e.target.value)}
+        onChange={onChange}
         placeholder="enter the movie title"
       />
       <button type="submit">Search</button>

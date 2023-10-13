@@ -1,56 +1,62 @@
-import { useState } from 'react';
-// import { useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { handleSearchMovie } from 'service/api';
 import MovieList from 'components/MovieList';
 import SearchForm from 'components/SearchForm';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const Movies = () => {
   const [searchMovies, setSearchMovies] = useState([]);
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const query = searchParams.get('query') ?? '';
 
-  // const [searchParams, setSearchParams] = useSearchParams();
-  // const movieName = searchParams.get('query') ?? '';
+  // const navigate = useNavigate();
 
-  // useEffect(() => {
-  const handleSearch = async movieName => {
-    try {
-      const movie = await handleSearchMovie(movieName);
-      setSearchMovies(movie);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    if (query === '') return;
 
-  const handleMovieClick = (movieId) => {
-    navigate(`/movies/${movieId}`);
-  }
+    const handleSearch = async () => {
+      try {
+        const movie = await handleSearchMovie(query);
+        setSearchMovies(movie);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
-  // searchMovieData();
-  // }, []);
-
-  // state, isLoading, errors
-
-  // const updQueryString = e => {
-  //   const movieIdValue = e.target.value;
-  //   if (movieIdValue === '') {
-  //     return setSearchParams({});
-  //   }
-  //   setSearchParams({ movieId: movieIdValue });
-  // };
-  // const handleSubmit = value => {
-  //   setSearchParams({ query: value });
-  // };
+    handleSearch();
+    // setSearchMovies('');
+  }, [query]);
 
   // const updQueryString = query => {
   //   const nextParams = query !== '' && { query };
   //   setSearchParams(nextParams);
   // };
 
+  // const handleMovieClick = movieId => {
+  //   navigate(`/movies/${movieId}`);
+  // };
+
+  const handleSubmit = newQuery => {
+    if (newQuery.trim() === '') {
+      alert('Порожній запит');
+      return;
+    }
+    if (newQuery === query) {
+      alert('Введіть новий запит');
+      return;
+    }
+
+    setSearchMovies([]);
+    setSearchParams({ query: newQuery });
+  };
+
   return (
     <div>
-      <SearchForm onSearch={handleSearch} />
-      <MovieList movies={searchMovies} onMovieClick={handleMovieClick} />
+      <SearchForm onSubmit={handleSubmit} />
+      {searchMovies.length !== 0 && query !== '' && (
+        <MovieList movies={searchMovies} />
+      )}
     </div>
   );
 };

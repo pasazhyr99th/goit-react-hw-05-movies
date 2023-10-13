@@ -6,13 +6,15 @@ const MovieList = ({ movies }) => {
 
   return (
     <ul>
-      {movies.map(movie => (
-        <li key={movie.id}>
-          <Link to={`/movies/${movie.id}`} state={{ from: location }}>
-            {movie.title}
-          </Link>
-        </li>
-      ))}
+      {movies.map(movie => {
+        return (
+          <li key={movie.id}>
+            <Link to={`/movies/${movie.id}`} state={{ from: location }}>
+              {movie.title}
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 };
