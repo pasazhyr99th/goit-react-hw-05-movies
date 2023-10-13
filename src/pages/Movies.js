@@ -3,14 +3,11 @@ import { useSearchParams } from 'react-router-dom';
 import { handleSearchMovie } from 'service/api';
 import MovieList from 'components/MovieList';
 import SearchForm from 'components/SearchForm';
-// import { useNavigate } from 'react-router-dom';
 
 const Movies = () => {
   const [searchMovies, setSearchMovies] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const query = searchParams.get('query') ?? '';
-
-  // const navigate = useNavigate();
 
   useEffect(() => {
     if (query === '') return;
@@ -25,17 +22,7 @@ const Movies = () => {
     };
 
     handleSearch();
-    // setSearchMovies('');
   }, [query]);
-
-  // const updQueryString = query => {
-  //   const nextParams = query !== '' && { query };
-  //   setSearchParams(nextParams);
-  // };
-
-  // const handleMovieClick = movieId => {
-  //   navigate(`/movies/${movieId}`);
-  // };
 
   const handleSubmit = newQuery => {
     if (newQuery.trim() === '') {
