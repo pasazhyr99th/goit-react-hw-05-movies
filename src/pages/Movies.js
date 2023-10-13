@@ -3,23 +3,30 @@ import { useState } from 'react';
 import { handleSearchMovie } from 'service/api';
 import MovieList from 'components/MovieList';
 import SearchForm from 'components/SearchForm';
+import { useNavigate } from 'react-router-dom';
 
 const Movies = () => {
   const [searchMovies, setSearchMovies] = useState([]);
+  const navigate = useNavigate();
+
   // const [searchParams, setSearchParams] = useSearchParams();
   // const movieName = searchParams.get('query') ?? '';
 
   // useEffect(() => {
-    const searchMovieData = async movieName => {
-      try {
-        const data = await handleSearchMovie(movieName);
-        setSearchMovies(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
+  const handleSearch = async movieName => {
+    try {
+      const movie = await handleSearchMovie(movieName);
+      setSearchMovies(movie);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-    // searchMovieData();
+  const handleMovieClick = (movieId) => {
+    navigate(`/movies/${movieId}`);
+  }
+
+  // searchMovieData();
   // }, []);
 
   // state, isLoading, errors
@@ -34,7 +41,7 @@ const Movies = () => {
   // const handleSubmit = value => {
   //   setSearchParams({ query: value });
   // };
-  
+
   // const updQueryString = query => {
   //   const nextParams = query !== '' && { query };
   //   setSearchParams(nextParams);
@@ -42,8 +49,8 @@ const Movies = () => {
 
   return (
     <div>
-      <SearchForm value={searchMovieData} />
-      <MovieList movies={searchMovies} />
+      <SearchForm onSearch={handleSearch} />
+      <MovieList movies={searchMovies} onMovieClick={handleMovieClick} />
     </div>
   );
 };

@@ -1,15 +1,16 @@
-import { useState } from "react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const SearchForm = ({ value }) => {
+const SearchForm = ({ onSearch }) => {
   const [query, setQuery] = useState('');
-
-  // const handleInputChange = e => {
-  //   setQuery(e.target.value);
-  // }
+  const navigate = useNavigate();
 
   const handleSubmit = e => {
     e.preventDefault();
-    value(query.toLowerCase());
+    navigate(`/movies?query=${query}`);
+
+    onSearch(query.toLowerCase());
+    setQuery('');
   };
 
   return (

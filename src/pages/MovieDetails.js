@@ -1,9 +1,9 @@
-import { useEffect, useRef, Suspense, useState } from 'react';
+import React, { useEffect, useRef, Suspense, useState } from 'react';
 import { Link, Outlet, useLocation, useParams } from 'react-router-dom';
 import { fetchMovieDetails } from 'service/api';
 
 const MovieDetails = () => {
-  const [movieInfo, setMovieInfo] = useState(null);
+  const [movieData, setMovieData] = useState([]);
   const { movieId } = useParams();
   const location = useLocation();
   const backLinkLocationRef = useRef(location.state?.from ?? '/');
@@ -13,8 +13,8 @@ const MovieDetails = () => {
 
     const fetchMovieDetailsData = async () => {
       try {
-        const data = await fetchMovieDetails(movieId);
-        setMovieInfo(data);
+        const details = await fetchMovieDetails(movieId);
+        setMovieData(details);
       } catch (error) {
         console.error(error);
       }
@@ -25,21 +25,38 @@ const MovieDetails = () => {
 
   const {
     poster_path,
-    original_title,
+    vote_average,
     title,
     release_date,
-    popularity,
     overview,
     genres,
-  } = movieInfo || {};
+    original_title,
+  } = movieData || {};
+
+  const defaultImgURL =
+    'https://ireland.apollo.olxcdn.com/v1/files/0iq0gb9ppip8-UA/image;s=1000x700';
 
   return (
     <>
-      {/* <h1>Movie details: {movieId}</h1> */}
       <Link to={backLinkLocationRef.current}>
         <button type="button">⬅️ Go back</button>
       </Link>
-      {movieInfo && (
+      <h1>
+        {title} {release_date && `(${release_date.substring(0, 4)})`}
+      </h1>
+      <img
+        src={
+          poster_path
+            ? `https://image.tmdb.org/t/p/w500/${poster_path}`
+            : defaultImgURL
+        }
+        alt={original_title}
+        width={250}
+      />
+      <p>Rating: {vote_average}</p>
+      <p>Overview: {overview}</p>
+      <p>Genres: {genres?.map(genre => genre.name).join(', ')}</p>
+      {/* {movieData && (
         <div>
           <img
             width="300px"
@@ -65,7 +82,8 @@ const MovieDetails = () => {
             </ul>
           </div>
         </div>
-      )}
+      )} */}
+
       <ul>
         <li>
           <Link to="cast">Cast</Link>

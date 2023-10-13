@@ -30,7 +30,7 @@ export const handleSearchMovie = async movieName => {
 
 export const fetchMovieDetails = async movieId => {
   try {
-    const response = await axios.get(`movie/${movieId}`);
+    const response = await axios.get(`movie/${movieId}`, params);
     return response.data;
   } catch (error) {
     throw error;
@@ -39,7 +39,7 @@ export const fetchMovieDetails = async movieId => {
 
 export const fetchMovieCast = async movieId => {
   try {
-    const response = await axios.get(`movie/${movieId}/credits`);
+    const response = await axios.get(`movie/${movieId}/credits`, params);
     return response.data.cast;
   } catch (error) {
     throw error;
@@ -48,7 +48,7 @@ export const fetchMovieCast = async movieId => {
 
 export const fetchMovieReviews = async movieId => {
   try {
-    const response = await axios.get(`movie/${movieId}/reviews`);
+    const response = await axios.get(`movie/${movieId}/reviews`, params);
     return response.data.results;
   } catch (error) {
     throw error;
